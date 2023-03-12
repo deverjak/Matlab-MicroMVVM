@@ -1,35 +1,32 @@
-classdef (Abstract) AbstractViewModel < handle
+classdef (Abstract) AbstractViewModel < matlab.mixin.SetGet
     %ABSTRACTVIEWMODEL Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties (Access = protected, Sealed)
-       Binder micromvvm.Binder = micromvvm.Binder()
-       ViewModelListener event.listener = event.listener.empty
-       Registry
-    end
-    
-    events
-        PropertyChanged
+    properties (Access = protected)
+        Registry event.listener = event.listener.empty
     end
     
     methods
-        function registerListener(obj, Sealed)
-            obj.ViewModelListener = addlistener(obj, 'PropertyChanged', @obj.setRegisteredField);
-        end
-        
-        function registerBinding(obj, targetObject, property)
-            obj.Registry = struct(property, targetObject);
+        function registerBinding(obj, guiObj, propertyName)
+            % based on https://www.mathworks.com/matlabcentral/fileexchange/90885-bindvalue
+            modelGuiBindingFcn = @(property,event) set(guiObj,'Value',event.AffectedObject.(property.Name));
+            obj.Registry(length(obj.Registry)+1) = addlistener(obj, propertyName, 'PostSet', modelGuiBindingFcn);
+            
+            guiModelBindingFcn = @(~,event) set(obj, propertyName, event.Value);
+            metaprop = findprop(obj, propertyName);
+            
+            isEditable = isprop(guiObj,'ValueChangedFcn'); 
+            isSetable = isequal(metaprop.SetAccess, 'public');
+            
+            if (isEditable && isSetable) 
+                set(guiObj(isEditable),'ValueChangedFcn',guiModelBindingFcn);
+            end
         end
     end
     
-    methods (Access = protected, Sealed)
-        function raisePropertyChanged(obj, propertyName)
-            notify(obj, 'PropertyChanged', micromvvm.PropertyChangedData(propertyName));
-        end
+    methods (Static, Access = private)
         
-        function setRegisteredField(obj, source, event)
-            event.Property
-        end
     end
+    
 end
 

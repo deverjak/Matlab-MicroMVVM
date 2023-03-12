@@ -1,6 +1,6 @@
 classdef SomeViewModel < micromvvm.AbstractViewModel
     
-    properties (GetAccess = public, SetAccess = private)
+    properties (SetObservable)
         Greetings (1,1) string = "Hello World"
     end
         
@@ -8,13 +8,6 @@ classdef SomeViewModel < micromvvm.AbstractViewModel
     methods (Access = public)        
         function command = displayHelloWorld(obj)
             command = micromvvm.RelayCommand(@obj.displayHelloWorldExecute);
-        end
-        
-        function setGreetings(obj, greetings)
-            if ~isequal(obj.Greetings, greetings)
-                obj.Greetings = greetings;
-                obj.raisePropertyChanged('Greetings');
-            end
         end
     end
     
@@ -24,5 +17,4 @@ classdef SomeViewModel < micromvvm.AbstractViewModel
         end
     end
     
-    s
 end
