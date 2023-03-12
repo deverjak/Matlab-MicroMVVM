@@ -3,7 +3,7 @@ clc
 viewModel = SomeViewModel;
 view = SomeView(viewModel);
 
-viewModel.Greetings = "Aloha2";
+viewModel.Greetings = "Hello World";
 
-cmd = viewModel.displayHelloWorld();
+cmd = viewModel.greet();
 cmd.execute();
