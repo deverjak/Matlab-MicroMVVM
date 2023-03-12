@@ -1,9 +1,6 @@
-classdef Binder
+classdef CommandBinder
     %BINDER Summary of this class goes here
     %   Detailed explanation goes here
-    properties (Access = private)
-        Bindings micromvvm.PropertyBinding = micromvvm.PropertyBinding.empty
-    end
     
     methods(Static, Access = public)
         function setCommandAndCallback(targetObject, callbackType, invokedCommand)
@@ -11,7 +8,7 @@ classdef Binder
                 targetObject.addprop('Command');
             end
             targetObject.Command = invokedCommand;
-            targetObject.(callbackType) = @micromvvm.Binder.executeCommand;
+            targetObject.(callbackType) = @micromvvm.CommandBinder.executeCommand;
         end
     end
     
