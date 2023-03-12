@@ -4,9 +4,15 @@ classdef CommandBinder
     
     methods(Static, Access = public)
         function setCommandAndCallback(targetObject, callbackType, invokedCommand)
+            if ~isa(invokedCommand, "micromvvm.ICommand")
+                throw(micromvvm.Exception.invalidArgumentType(...
+                    "micromvvm.ICommand", class(invokedCommand)));
+            end
+
             if ~isprop(targetObject, 'Command')
                 targetObject.addprop('Command');
             end
+
             targetObject.Command = invokedCommand;
             targetObject.(callbackType) = @micromvvm.CommandBinder.executeCommand;
         end
@@ -16,9 +22,6 @@ classdef CommandBinder
         function executeCommand(source, ~)
             command = source.Command;
             if ~isprop(command, 'Command')
-                % throw InvalidPropertyException
-            end
-            if ~isa(command, 'micromvvm.ICommand')
                 % throw InvalidPropertyException
             end
             command.execute();
