@@ -1,7 +1,7 @@
 clc
 
 viewModel = SomeViewModel;
-view = View(viewModel);
+view = SomeView(viewModel);
 
 viewModel.Greetings = "Aloha2";
 
